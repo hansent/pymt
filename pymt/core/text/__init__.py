@@ -60,7 +60,7 @@ class LabelBase(BaseObject):
             certain zone, and prevent to drawing outside the viewport.
             If the label have a size of (1800, 25) with a viewport_size of (100,
             100), the drawing will not go outside the viewport, but start from
-            (0, 0). 
+            (0, 0).
             If you want to draw another part of the texture, use `viewport_pos`.
     '''
 
@@ -115,6 +115,7 @@ class LabelBase(BaseObject):
         self.texture    = None
         self.viewport_size  = kwargs.get('viewport_size')
         self.viewport_pos   = kwargs.get('viewport_pos')
+        self.line_spacing   = kwargs.get('line_spacing', 0)
 
         if 'font_name' in self.options:
             fontname = self.options['font_name']
@@ -164,6 +165,7 @@ class LabelBase(BaseObject):
         if uw is None:
             for line in self.label.split('\n'):
                 lw, lh = self.get_extents(line)
+                lh += self.line_spacing
                 if real:
                     x = 0
                     if self.options['halign'] == 'center':
@@ -229,7 +231,7 @@ class LabelBase(BaseObject):
                 # advance the width
                 lw += ww
                 x  += ww
-                lh = max(wh, lh)
+                lh = max(wh, lh) + self.line_spacing
                 glyphs += list(word)
 
             # got some char left ?
@@ -421,4 +423,3 @@ Label = core_select_lib('text', (
     ('cairo', 'text_cairo', 'LabelCairo'),
     ('pil', 'text_pil', 'LabelPIL'),
 ))
-
